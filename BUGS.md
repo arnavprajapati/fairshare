@@ -84,6 +84,16 @@ Keep this file in the repo and **commit it** with your fixes.
 
 ## Bug 8
 
+**How to reproduce:** Add an expense to the app, then refresh the page.
+
+**What is wrong:** Browser `localStorage` serializes `Date` objects as ISO string representations. When state was restored using `JSON.parse(raw)`, `loadState` in `src/state/store.js` returned the raw JSON without re-instantiating `Date` objects through `hydrate()`. Consequently, `formatDate` received strings and fell back to raw sliced ISO strings instead of locale-formatted dates (`"7 Mar 2026"`).
+
+**What I changed:** Updated `loadState` in `src/state/store.js` to pass parsed localStorage data through `hydrate(JSON.parse(raw))`. Also updated `formatDate` in `src/lib/format.js` to parse string inputs via `new Date(date)` for resilient date formatting.
+
+---
+
+## Bug 9
+
 **How to reproduce:**
 
 **What is wrong:**
