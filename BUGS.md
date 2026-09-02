@@ -74,6 +74,16 @@ Keep this file in the repo and **commit it** with your fixes.
 
 ## Bug 7
 
+**How to reproduce:** Create an expense of $100.00 split equally among 3 members. Summing the individual split shares ($33.33 each) yields $99.99, losing $0.01 from the total group bill.
+
+**What is wrong:** `splitEqual` in `src/lib/money.js` performed simple floating-point division and rounded each share individually (`(amount / n).toFixed(2)`). When an amount is not cleanly divisible by the number of participants, rounded cents are dropped or added, causing the total shares not to match the bill.
+
+**What I changed:** Converted the amount to integer cents, used integer division (`Math.floor(totalCents / n)`), and distributed any remainder cents (`totalCents % n`) to the first participants so the sum of individual shares always matches the total bill down to the exact cent.
+
+---
+
+## Bug 8
+
 **How to reproduce:**
 
 **What is wrong:**

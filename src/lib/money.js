@@ -6,12 +6,17 @@ export function formatMoney(amount) {
 }
 
 export function splitEqual(amount, ids) {
-  const n = ids.length || 1;
-  const share = Number((amount / n).toFixed(2));
+  const n = ids.length;
+  if (!n) return {};
+  const totalCents = Math.round(Number(amount) * 100);
+  const baseCents = Math.floor(totalCents / n);
+  const remainderCents = totalCents % n;
+
   const shares = {};
-  for (const id of ids) {
-    shares[id] = share;
-  }
+  ids.forEach((id, index) => {
+    const extra = index < remainderCents ? 1 : 0;
+    shares[id] = (baseCents + extra) / 100;
+  });
   return shares;
 }
 
