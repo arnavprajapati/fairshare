@@ -94,10 +94,18 @@ Keep this file in the repo and **commit it** with your fixes.
 
 ## Bug 9
 
-**How to reproduce:**
+**How to reproduce:** Add a new member in the "Add member" box. Look at the "Paid so far" list in the Summary panel.
 
-**What is wrong:**
+**What is wrong:** `useMemo` calculating the per-person summary in `src/components/SummaryCards.jsx` only had `[expenses]` in its dependency array and omitted `members`. As a result, when new members were added to the group, the "Paid so far" section failed to update to include the new member.
 
-**What I changed:**
+**What I changed:** Updated the `useMemo` dependency array to `[members, expenses]`.
 
 ---
+
+## Bug 10
+
+**How to reproduce:** Fill in a description and amount in the "Add expense" form, select participants, and click "Add".
+
+**What is wrong:** After successfully creating and dispatching the new expense, the form did not reset the `description` and `amount` state fields, leaving stale input values in the form.
+
+**What I changed:** Added `setDescription("")`, `setAmount("")`, and `setError(null)` in `AddExpenseForm.jsx`'s submit handler after dispatching `onAdd`.
