@@ -28,6 +28,16 @@ Keep this file in the repo and **commit it** with your fixes.
 
 ## Bug 3
 
+**How to reproduce:** Set up balances where a debtor's total debt equals a creditor's exact credit amount (e.g., Debtor owes $50 and Creditor is owed $50). Open the Settle Up panel.
+
+**What is wrong:** In the greedy two-pointer settlement loop in `suggestSettlements`, when `d.amount === c.amount`, the `else` branch increments both pointers (`i += 1; j += 1;`) without adding the transfer to the `transfers` array. As a result, the settlement transaction is dropped and never shown.
+
+**What I changed:** In `src/lib/settle.js`, added `transfers.push({ from: d.id, to: c.id, fromName: nameOf(d.id), toName: nameOf(c.id), amount: d.amount })` inside the `else` block before incrementing the indices.
+
+---
+
+## Bug 4
+
 **How to reproduce:**
 
 **What is wrong:**
