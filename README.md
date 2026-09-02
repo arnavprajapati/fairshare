@@ -49,3 +49,23 @@ Find problems, fix them, and record them in `BUGS.md` (this file is already in t
 1. Create a **new public repository** on your GitHub account (do not fork an existing private company repo).
 2. Push your work there, including your filled-in `BUGS.md`.
 3. Send us the repository URL.
+
+---
+
+## 🛠️ Summary of Fixes & Improvements
+
+Below is the complete summary of all **11 domain logic, mathematical, and React state issues** identified and resolved across the codebase:
+
+| # | Issue Area | Affected Files | Problem Description | Resolution |
+| :-: | :--- | :--- | :--- | :--- |
+| **1** | **Expense List Sort Order** | `ExpenseList.jsx`, `format.js` | UI claimed "Newest first" but expenses were sorted oldest first; `dateValue` returned raw string. | Updated sort comparator to descending order and made `dateValue` return numerical timestamp. |
+| **2** | **Inverted Balances Status** | `BalancesPanel.jsx` | Positive balances were shown as "owes" (red) and negative balances as "is owed" (green). | Inverted condition and CSS classes so positive balance displays "is owed" (green) and negative displays "owes" (red). |
+| **3** | **Settlement Transfer Drop** | `settle.js` | Greedy settlement algorithm omitted `transfers.push` when debtor and creditor amounts were exactly equal. | Added transfer push in the `else` branch of `suggestSettlements` before advancing pointers. |
+| **4** | **Non-Participant Payer Deduction** | `balances.js` | Payers not included in the split had an equal share erroneously deducted from their reimbursement balance. | Removed erroneous deduction block to ensure non-participant payers receive 100% full reimbursement. |
+| **5** | **Data Corruption on Delete/Edit** | `store.js`, `ExpenseList.jsx`, `App.jsx` | Delete and edit operations passed filtered array indices to the reducer, mutating/deleting wrong items under active filters. | Migrated `DELETE_EXPENSE` and `UPDATE_EXPENSE` actions to target items by unique `id`. |
+| **6** | **"Paid by" Filter Type Coercion** | `App.jsx` | Filter compared string dropdown value (`"1"`) with number ID (`1`) using strict inequality, hiding all results. | Coerced comparison to strings (`String(e.paidBy) !== String(paidBy)`). |
+| **7** | **Floating-Point % Validation** | `money.js` | Custom percentage splits totaling 100% (e.g. `33.33 + 33.33 + 33.34`) failed strict `sum === 100` validation. | Added floating-point epsilon tolerance (`Math.abs(sum - 100) < 0.01`). |
+| **8** | **Penny Rounding in Equal Split** | `money.js` | Equal split rounded individual shares independently, losing/inventing pennies (e.g., $100 / 3 = $99.99). | Implemented integer cent division with remainder cent allocation to guarantee exact total match. |
+| **9** | **Date Serialization on Reload** | `store.js`, `format.js` | Reloading from `localStorage` left dates as unparsed ISO strings, breaking date formatting helpers. | Hydrated stored data with `hydrate(JSON.parse(raw))` and added safe `new Date(date)` parsing in `formatDate`. |
+| **10** | **Summary Cards Missing Dependency** | `SummaryCards.jsx` | `useMemo` calculating per-person totals omitted `members` in dependency array, failing to update on member addition. | Added `members` to `useMemo` dependency array (`[members, expenses]`). |
+| **11** | **Form Inputs Reset on Submit** | `AddExpenseForm.jsx` | Description and amount inputs remained filled after submitting a new expense. | Reset form state fields (`setDescription("")`, `setAmount("")`) upon successful submission. |
