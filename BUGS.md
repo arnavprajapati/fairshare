@@ -58,6 +58,22 @@ Keep this file in the repo and **commit it** with your fixes.
 
 ## Bug 6
 
+**How to reproduce:** 
+1. Select any member (e.g. Aisha) from the "Paid by" dropdown in the filter bar. The expenses list becomes empty.
+2. In the "Add expense" form, choose "%" (custom split) for 3 people, enter `33.33%`, `33.33%`, and `33.34%`, and attempt to submit. An error is shown that percentages must sum to 100%.
+
+**What is wrong:** 
+1. In `src/App.jsx`, the "Paid by" filter compared `e.paidBy !== paidBy`. The dropdown state is a string (`"1"`), whereas `e.paidBy` is stored as a number (`1`), causing strict inequality to reject all matches.
+2. In `src/lib/money.js`, `percentsSumTo100` performed a strict equality check `sum === 100`. In JavaScript, `33.33 + 33.33 + 33.34` sums to `100.00000000000001`, failing validation for valid splits totaling 100%.
+
+**What I changed:** 
+1. In `src/App.jsx`, updated the filter condition to compare string values: `String(e.paidBy) !== String(paidBy)`.
+2. In `src/lib/money.js`, updated `percentsSumTo100` to allow an epsilon tolerance: `Math.abs(sum - 100) < 0.01`.
+
+---
+
+## Bug 7
+
 **How to reproduce:**
 
 **What is wrong:**
