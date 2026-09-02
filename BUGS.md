@@ -38,6 +38,16 @@ Keep this file in the repo and **commit it** with your fixes.
 
 ## Bug 4
 
+**How to reproduce:** Create an expense where Person A pays $60, but splits it only between Person B and Person C (Person A is unchecked in `splitWith`). Check Person A's balance.
+
+**What is wrong:** `computeBalances` in `src/lib/balances.js` contained an incorrect block that deducted an equal share (`amount / n`) from the payer's balance whenever the payer was not in `splitWith`. As a result, the payer was reimbursed only partially instead of 100%, and the group balances failed to sum to zero.
+
+**What I changed:** Removed the invalid deduction block from `src/lib/balances.js` so that non-participant payers receive full reimbursement for the money they paid.
+
+---
+
+## Bug 5
+
 **How to reproduce:**
 
 **What is wrong:**
