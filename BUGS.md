@@ -48,6 +48,16 @@ Keep this file in the repo and **commit it** with your fixes.
 
 ## Bug 5
 
+**How to reproduce:** Filter expenses by Category "Food" or type "Dinner" in the search box. Click "Delete" or edit the amount on any row in the filtered list.
+
+**What is wrong:** `ExpenseList` was passing the array index of the filtered/sorted view (`index`), but the reducer in `src/state/store.js` modified `state.expenses[action.index]` on the master list. As a result, deleting or updating an item while filters or sorting were active corrupted or deleted completely different expenses.
+
+**What I changed:** Updated `DELETE_EXPENSE` and `UPDATE_EXPENSE` actions to target expenses by their unique `id` instead of array index. Updated `ExpenseList.jsx` and `App.jsx` to pass `expense.id` for delete and update handlers.
+
+---
+
+## Bug 6
+
 **How to reproduce:**
 
 **What is wrong:**
